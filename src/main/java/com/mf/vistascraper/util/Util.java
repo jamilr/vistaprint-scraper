@@ -2,12 +2,8 @@ package com.mf.vistascraper.util;
 
 import org.apache.commons.validator.UrlValidator;
 import org.apache.lucene.search.spell.NGramDistance;
-import org.apache.poi.util.CommonsLogger;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

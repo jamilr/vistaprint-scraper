@@ -5,6 +5,7 @@ import com.mf.vistascraper.spreadsheet.DataRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,52 +32,54 @@ public class DataRegistryTest {
         assertTrue(dataRegistry.getSetSize('h') == 0);
 
         BusinessEntity bEntityA = new BusinessEntity();
-        bEntityA.setWebsite("http://www.google.com");
-        bEntityA.setPhone("(885)333 33 33");
+        bEntityA.getWebsites().add("http://www.google.com");
+        bEntityA.getPhone().add("(912) 988 - 3112");
         bEntityA.setName("How are you doing?");
 
         BusinessEntity bEntityB = new BusinessEntity();
-        bEntityB.setWebsite("http://www.google.com");
-        bEntityB.setPhone("(885)333 33 33");
+        bEntityB.getWebsites().add("http://www.google.com");
+        bEntityB.getWebsites().add("(912) 988 - 3112");
         bEntityB.setName("How are you doing?");
 
-        assertTrue(dataRegistry.offer(bEntityA));
-        assertTrue(!dataRegistry.replace(bEntityA, bEntityB));
-        assertTrue(dataRegistry.getSetSize('h') == 1);
+        dataRegistry.update(bEntityA, bEntityB);
+        assertEquals(1, bEntityA.getPhone().size());
     }
 
     @Test
     public void testSameWithDifferentEntities() {
 
         BusinessEntity bEntityA = new BusinessEntity();
-        bEntityA.setWebsite("http://www.google.com");
-        bEntityA.setPhone("(885)333 33 33");
+        bEntityA.getWebsites().add("http://www.google.com");
+        bEntityA.getPhone().add("(912) 988 - 3112");
         bEntityA.setName("How are you doing?");
 
         BusinessEntity bEntityB = new BusinessEntity();
-        bEntityB.setWebsite("http://www.google.com");
-        bEntityB.setPhone("(885)333 33 33");
+        bEntityB.getWebsites().add("http://www.yahoo.com");
+        bEntityB.getPhone().add("(912) 988 - 3112");
         bEntityB.setName("How are you doing?");
 
         BusinessEntity bEntityC = new BusinessEntity();
-        bEntityC.setWebsite("");
-        bEntityC.setPhone("(885)333 33 33");
+        bEntityC.getWebsites().add("");
+        bEntityC.getPhone().add("(912) 988 - 3113");
         bEntityC.setName("How are you doing?");
 
         BusinessEntity bEntityD = new BusinessEntity();
-        bEntityD.setWebsite("http://www.google.com");
-        bEntityD.setPhone("(885)333 33 33");
+        bEntityD.getWebsites().add("http://www.google.com");
+        bEntityD.getPhone().add("");
         bEntityD.setName("How are you doing?");
 
         BusinessEntity bEntityE = new BusinessEntity();
-        bEntityE.setWebsite("http://www.google.com");
-        bEntityE.setPhone("(885)333 33 33");
+        bEntityE.getWebsites().add("http://www.google.com");
+        bEntityE.getPhone().add("(912) 988 - 3112");
         bEntityE.setName("How are you ");
 
-        assertTrue(dataRegistry.offer(bEntityA));
-        assertTrue(!dataRegistry.replace(bEntityA, bEntityB));
-        assertTrue(!dataRegistry.replace(bEntityA, bEntityC));
-        assertTrue(dataRegistry.replace(bEntityC, bEntityD));
-        assertTrue(!dataRegistry.replace(bEntityC, bEntityE));
+        dataRegistry.update(bEntityA, bEntityB);
+        assertEquals(2, bEntityA.getWebsites().size());
+
+        dataRegistry.update(bEntityA, bEntityC);
+        assertEquals(2, bEntityA.getPhone().size());
+
+        dataRegistry.update(bEntityA, bEntityD);
+        assertEquals(2, bEntityA.getPhone().size());
     }
 }

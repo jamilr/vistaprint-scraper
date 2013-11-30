@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -190,8 +191,8 @@ public class ScraperUtil {
         email.setEmailURL(imgURL);
 
         businessEntity.setName(title);
-        businessEntity.setPhone(phone);
-        businessEntity.setWebsite(website);
+        businessEntity.getPhone().add(phone);
+        businessEntity.getWebsites().add(website);
         businessEntity.setEmail(email);
 
         return businessEntity;

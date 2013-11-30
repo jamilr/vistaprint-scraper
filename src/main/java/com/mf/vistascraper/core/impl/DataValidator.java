@@ -4,6 +4,8 @@ import com.mf.vistascraper.model.AbstractBusinessEntity;
 import com.mf.vistascraper.util.ImageUtil;
 import com.mf.vistascraper.util.Util;
 
+import java.util.Set;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jr
@@ -19,28 +21,32 @@ public class DataValidator {
         if (businessEntity.getClass().equals(NullPointerException.class))
             return false;
 
-        String webSite = businessEntity.getWebsite();
-        String phone = businessEntity.getPhone();
+        boolean valid = true;
+
+        String webSite = businessEntity.getWebsites().iterator().next();
+        String phone = businessEntity.getPhone().iterator().next();
 
         if (!phone.isEmpty())
             phone = Util.extractNumFromStr(phone);
 
         byte[] imgData = null;
         String imgURL = businessEntity.getEmail().getEmailURL();
-        if (imgURL != null)
+        if (imgURL != null && Util.validURL(imgURL))
             imgData = ImageUtil.loadImage(imgURL);
 
         if (!validateWebSiteURL(webSite)) {
             webSite = "";
-            businessEntity.setWebsite(webSite);
             if (imgData == null)
-                return false;
+                valid = false;
         }
 
-        businessEntity.setPhone(phone);
+        businessEntity.getWebsites().clear();
+        businessEntity.getWebsites().add(webSite);
+        businessEntity.getPhone().clear();
+        businessEntity.getPhone().add(phone);
         businessEntity.getEmail().setData(imgData);
 
-        return true;
+        return valid;
     }
 
     private static boolean validateWebSiteURL(String webSite) {

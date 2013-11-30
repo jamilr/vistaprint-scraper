@@ -6,6 +6,7 @@ import com.mf.vistascraper.model.BusinessEntity;
 import com.mf.vistascraper.spreadsheet.DataWriter;
 import com.mf.vistascraper.util.Constants;
 import com.mf.vistascraper.util.ScraperUtil;
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -21,6 +22,8 @@ import java.util.List;
  */
 
 public class VistaScraperService implements IScraperService {
+
+    private static Logger logger = Logger.getLogger(VistaScraperService.class);
 
     private List<String> statesList;
     private List<String> topicsList;
@@ -61,6 +64,7 @@ public class VistaScraperService implements IScraperService {
 
                 what = topicsList.get(j);
                 where = statesList.get(i);
+                logger.info("Search: ".concat(what).concat(" : ").concat(where));
 
                 document = ScraperUtil.loadHTMLDocument(url, what, where, null);
                 pageCount = ScraperUtil.extractPageCount(document);

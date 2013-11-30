@@ -27,6 +27,7 @@ public class ExcelWorkBookHelper {
 
     public static void addValueToRow(Row row, int cellIdx, WorkBookValueType valueType, Object value) {
 
+
         switch (valueType) {
             case NUM: {
                 Integer intValue = (Integer)value;

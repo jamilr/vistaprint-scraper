@@ -1,5 +1,10 @@
 package com.mf.vistascraper.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jr
@@ -12,13 +17,17 @@ public abstract class AbstractBusinessEntity
         implements IBusinessEntity {
 
     protected String name;
-    protected String phone;
-    protected String website;
+    protected Set<String> phones;
+    protected Set<String> websites;
+    protected int workBookRowIdx;
 
     protected Email email;
 
     public AbstractBusinessEntity() {
         this.email = new Email();
+        this.phones = new HashSet<String>();
+        this.websites = new HashSet<String>();
+        this.workBookRowIdx = -1;
     }
 
     public String getName() {
@@ -29,27 +38,35 @@ public abstract class AbstractBusinessEntity
         this.name = name;
     }
 
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public Email getEmail(){
         return email;
     }
 
     public void setEmail(Email emailObj) {
         this.email = emailObj;
+    }
+
+    public void setPhones(Set<String> phones) {
+        this.phones = phones;
+    }
+
+    public Set<String> getPhone(){
+        return phones;
+    }
+
+    public void setWrbsites(Set<String> websites) {
+        this.websites = websites;
+    }
+
+    public Set<String> getWebsites(){
+        return websites;
+    }
+
+    public int getWorkBookRowIdx(){
+        return workBookRowIdx;
+    }
+
+    public void setWorkBookRowIdx(int rowIdx) {
+        this.workBookRowIdx = rowIdx;
     }
 }

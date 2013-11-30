@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,7 +23,7 @@ public class DataRegistry {
     private static Logger logger = Logger.getLogger(DataRegistry.class);
 
     private Map<Character, Map<String, BusinessEntity>> dataRegistry =
-            new HashMap<Character, Map<String, BusinessEntity>>();
+            new TreeMap<Character, Map<String, BusinessEntity>>();
 
     public DataRegistry() {
 
@@ -29,55 +31,82 @@ public class DataRegistry {
             dataRegistry.put(ch, new HashMap<String, BusinessEntity>());
     }
 
-    public boolean offer(BusinessEntity businessEntity) {
+    public boolean offer(BusinessEntity newBEntity) {
 
-        boolean toPut = true;
+        boolean isNew = true;
 
-        if (businessEntity.getName().isEmpty()) return false;
+        if (newBEntity.getName().isEmpty()) return false;
 
-        char firstChar = businessEntity.getName().toLowerCase().charAt(0);
+        Character firstChar = newBEntity.getName().toLowerCase().charAt(0);
 
         Map<String, BusinessEntity> subRegistry = dataRegistry.get(firstChar);
 
+        float distance;
+        BusinessEntity existingBEntity;
         if (subRegistry != null) {
             for (String key: subRegistry.keySet()) {
-                if (Util.getWordsDistance(key, businessEntity.getName()) >= 0.7) {
-                    BusinessEntity otherBEntity = subRegistry.get(key);
-                    if (!replace(businessEntity, otherBEntity))
-                        toPut = false;
+
+//                if (newBEntityName.charAt(1) > key.charAt(1)) {
+//                    isNew = false;
+//                    break;
+//                }
+                distance = 1 - Util.getWordsDistance(key, newBEntity.getName());
+
+                if (distance <= 0.5) {
+
+                    existingBEntity = subRegistry.get(key);
+
+                    if (!update(existingBEntity, newBEntity)) {
+                        isNew = false;
+                        break;
+                    }
+
+                    if (existingBEntity.getName().length() < newBEntity.getName().length()) {
+                        subRegistry.remove(key);
+                        existingBEntity.setName(newBEntity.getName());
+                    }
+
+                    copy(newBEntity, existingBEntity);
                     break;
                 }
             }
         }
 
-        if (toPut)
-            dataRegistry.get(firstChar).put(businessEntity.getName(), businessEntity);
+        if (isNew)
+            subRegistry.put(newBEntity.getName(), newBEntity);
 
-        return toPut;
+        return isNew;
     }
 
-    public boolean replace(BusinessEntity businessEntityA, BusinessEntity businessEntityB) {
+    private void copy(BusinessEntity entityA, BusinessEntity entityB) {
+        entityA.setName(entityB.getName());
+        entityA.setEmail(entityB.getEmail());
+        entityA.setPhones(entityB.getPhone());
+        entityA.setWrbsites(entityB.getWebsites());
+        entityA.setWorkBookRowIdx(entityB.getWorkBookRowIdx());
+    }
 
-        boolean replace = false;
+    public boolean update(BusinessEntity originalEntity, BusinessEntity newEntity) {
 
-        if (Util.getWordsDistance(businessEntityA.getPhone(),businessEntityB.getPhone()) < 0.9) {
-            if (!Util.validPhone(businessEntityA.getPhone()) && Util.validPhone(businessEntityB.getPhone())) {
-                businessEntityA.setPhone(businessEntityB.getPhone());
-                replace = true;
+        boolean updated = false;
+
+        for (String phone : newEntity.getPhone()) {
+            if (Util.validPhone(phone))
+                if (!originalEntity.getPhone().contains(phone)) {
+                    originalEntity.getPhone().add(phone);
+                    updated = true;
             }
         }
 
-        if (Util.getWordsDistance(businessEntityA.getWebsite(), businessEntityB.getWebsite()) < 0.9) {
-            if (!Util.validURL(businessEntityA.getWebsite()) && Util.validURL(businessEntityB.getWebsite())) {
-                businessEntityA.setWebsite(businessEntityB.getWebsite());
-                replace = true;
-            }
+        for (String webSite: newEntity.getWebsites()) {
+            if (Util.validURL(webSite))
+                if (!originalEntity.getWebsites().contains(webSite)) {
+                    originalEntity.getWebsites().add(webSite);
+                    updated = true;
+                }
         }
 
-        if (businessEntityA.getName().length() < businessEntityB.getName().length())
-            businessEntityA.setName(businessEntityB.getName());
-
-        return replace;
+        return updated;
     }
 
     public int getSetSize(Character ch) {

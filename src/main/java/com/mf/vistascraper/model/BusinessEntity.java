@@ -25,15 +25,6 @@ public class BusinessEntity extends AbstractBusinessEntity
         if (!this.getName().equalsIgnoreCase(otherBusinessEntity.getName()))
             return false;
 
-        if (!this.getPhone().equalsIgnoreCase(otherBusinessEntity.getPhone()))
-            return false;
-
-        if (!this.getWebsite().equalsIgnoreCase(otherBusinessEntity.getWebsite()))
-            return false;
-
-//        if (!this.getEmail().equalsIgnoreCase(otherBusinessEntity.getEmail()))
-//            return false;
-
         return true;
     }
 
@@ -41,8 +32,8 @@ public class BusinessEntity extends AbstractBusinessEntity
     public String toString() {
 
         return new StringBuilder(name)
-                .append(",").append(phone)
-                .append(",").append(website)
+                .append(",").append(phones.toArray().toString())
+                .append(",").append(websites.toArray().toString())
                 .append(",").append(email)
                 .append("\\n").toString();
     }

@@ -3,6 +3,7 @@ package com.mf.vistascraper.spreadsheet;
 import com.mf.vistascraper.util.Constants;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -37,9 +38,14 @@ public class ExcelWorkBook {
         this.workbook = new HSSFWorkbook();
         this.sheet = workbook.createSheet(Constants.SHEET_NAME);
 
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setWrapText(true);
+
         this.sheet.setDefaultRowHeight((short)500);
-        for (int i=0; i<Constants.SHEET_COLS_SET.size(); i++)
+        for (int i=0; i<Constants.SHEET_COLS_SET.size(); i++) {
             this.sheet.autoSizeColumn(i);
+            this.sheet.setDefaultColumnStyle(i, cellStyle);
+        }
     }
 
     public synchronized Row addRow(int rowIdx) {
@@ -63,7 +69,12 @@ public class ExcelWorkBook {
         ExcelWorkBookHelper.addSheet(workbook, sheetName);
     }
 
+    public synchronized Sheet getSheet() {
+        return this.sheet;
+    }
+
     public synchronized void save() {
+
 
         try {
 
@@ -74,4 +85,7 @@ public class ExcelWorkBook {
             logger.error(ex.getMessage(), ex);
         }
     }
+
+
+
 }

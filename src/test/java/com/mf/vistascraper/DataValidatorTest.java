@@ -2,6 +2,7 @@ package com.mf.vistascraper;
 
 import com.mf.vistascraper.core.impl.DataValidator;
 import com.mf.vistascraper.model.BusinessEntity;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -20,11 +21,11 @@ public class DataValidatorTest {
 
         BusinessEntity bEntity = new BusinessEntity();
         bEntity.setName("Yahoo");
-        bEntity.setWebsite("http://www.yahoo.com");
-        bEntity.setPhone("(333)333 3333");
+        bEntity.getWebsites().add("http://www.yahoo.com");
+        bEntity.getPhone().add("(333)333 3333");
 
         assertTrue(DataValidator.validate(bEntity));
-        assertTrue(bEntity.getWebsite().equals("http://www.yahoo.com"));
+        assertTrue(bEntity.getWebsites().iterator().next().equals("http://www.yahoo.com"));
     }
 
     @Test
@@ -32,11 +33,11 @@ public class DataValidatorTest {
 
         BusinessEntity bEntity = new BusinessEntity();
         bEntity.setName("Yahoo");
-        bEntity.setWebsite("http://POST");
-        bEntity.setPhone("(333)333 3333");
+        bEntity.getWebsites().add("http://POST");
+        bEntity.getPhone().add("(333)333 3333");
 
         assertTrue(!DataValidator.validate(bEntity));
-        assertTrue(bEntity.getWebsite().equals(""));
-        assertTrue(!bEntity.getWebsite().equals("http://POST"));
+        assertTrue(bEntity.getWebsites().iterator().next().equals(""));
+        assertTrue(!bEntity.getWebsites().iterator().next().equals("http://POST"));
     }
 }
